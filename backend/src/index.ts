@@ -4,6 +4,7 @@ import podcastSummaryRoutes from './routes/podcastSummaryRoutes';
 import userRoutes from './routes/userRoutes';
 import podcastAudioRoutes from './routes/podcastAudioRoutes';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 const app: Express = express();
