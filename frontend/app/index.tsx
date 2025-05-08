@@ -1,75 +1,35 @@
 import { useState } from "react";
 import { Button, Text, TextInput, View, Alert } from "react-native";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Index() {
   const [topic, setTopic] = useState("");
+  const [textContent, setTextContent] = useState("Podcast Summary");
   const [submitRequest, setSubmitRequest] = useState(false);
   const [podcast, setPodcast] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // const handleSubmit = async () => {
-  //   if (!topic.trim()) {
-  //     Alert.alert("Error", "Please enter a topic");
-  //     return;
-  //   }
-  //   await generatePodcast();
-  // };
-
-  // const generatePodcast = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const apiKey = process.env.GEMINI_API_KEY;
-      
-  //     if (!apiKey) {
-  //       throw new Error("API key is not configured. Please check your environment variables.");
-  //     }
-
-  //     const genAI = new GoogleGenerativeAI(apiKey);
-  //     const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // Changed to gemini-pro as it's more stable
-      
-  //     const prompt = "Generate a podcast script for the following topic: " + topic;
-  //     const result = await model.generateContent(prompt);
-  //     const response = await result.response;
-  //     setPodcast(response.text());
-  //     setSubmitRequest(true);
-  //   } catch (error) {
-  //     console.error("Error generating podcast:", error);
-  //     Alert.alert(
-  //       "Error",
-  //       "Failed to generate podcast. Please check your API key and try again."
-  //     );
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-  // TODO: Add the generate podcast function by calling the backend API 
-  // and then display the podcast on the screen
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
       const response = await fetch(`http://localhost:8000/podcast-summary`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ title: topic, summary: topic }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate podcast');
-      }
-
-      const data = await response.json();
-      setPodcast(data.podcast_script);  
-      setSubmitRequest(true);
-    } catch (error) {
-      console.error('Error generating podcast:', error);
-      Alert.alert('Error', 'Failed to generate podcast. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+                 headers: {
+                   'Content-Type': 'application/json'
+                   },
+                   body: JSON.stringify({
+                     title: topic,
+                     textContent: textContent
+                    })
+                 });
+                 const data = await response.json();
+                 setPodcast(data.podcast_script);
+                 setSubmitRequest(true);
+                 console.log(data);
+               } catch(error) {
+             Alert.alert('Error', 'Failed to generate podcast. Please try again.');
+             console.log(error)
+      } 
+    };
   return (
     <View
       style={{
