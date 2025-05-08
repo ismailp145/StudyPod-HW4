@@ -45,6 +45,31 @@ export default function Index() {
   // };
   // TODO: Add the generate podcast function by calling the backend API 
   // and then display the podcast on the screen
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`http://localhost:8000/podcast-summary`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: topic, summary: topic }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate podcast');
+      }
+
+      const data = await response.json();
+      setPodcast(data.podcast_script);  
+      setSubmitRequest(true);
+    } catch (error) {
+      console.error('Error generating podcast:', error);
+      Alert.alert('Error', 'Failed to generate podcast. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <View
       style={{
@@ -73,7 +98,7 @@ export default function Index() {
 
       <Button
         title={isLoading ? "Generating..." : "Generate Podcast"}
-        onPress={() => {}}
+        onPress={handleSubmit}
         disabled={isLoading}
       />
 

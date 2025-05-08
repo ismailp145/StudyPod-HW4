@@ -101,13 +101,18 @@ const validatePodcastSummary = (req: Request, res: Response, next: NextFunction)
           return
       }
       
-
       // Generic server error
       res.status(500).json({ error: "Failed to generate podcast script due to an internal server error." });
       return
     }
 
 });
+
+router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error("Unhandled Error:", err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
 
 // Remove a podcast by ID
 router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
